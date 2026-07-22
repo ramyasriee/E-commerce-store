@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import { ProductModel } from "../models/Product.js";
-import { UserModel } from "../models/User.js";
+import { ProductModel } from "../models/product.js";
+import { UserModel } from "../models/user.js";
 import { initialProducts } from "./mockData.js";
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ecommerce";

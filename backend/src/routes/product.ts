@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ProductModel } from "../models/Product.js";
+import { ProductModel } from "../models/product.js";
 import { z } from "zod";
 import { requireAdmin } from "../middleware/auth.js";
 

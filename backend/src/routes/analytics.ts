@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { OrderModel } from "../models/Order.js";
-import { ProductModel } from "../models/Product.js";
+import { OrderModel } from "../models/order.js";
+import { ProductModel } from "../models/product.js";
 import { requireAdmin } from "../middleware/auth.js";
 
 export const analyticsRouter = Router();

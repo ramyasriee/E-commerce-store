@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { UserModel } from "../models/User.js";
-import { OrderModel } from "../models/Order.js";
+import { UserModel } from "../models/user.js";
+import { OrderModel } from "../models/order.js";
 import { requireAdmin } from "../middleware/auth.js";
 
 export const adminRouter = Router();

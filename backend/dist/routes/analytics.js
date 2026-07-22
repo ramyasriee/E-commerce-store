@@ -1,32 +1,54 @@
 import { Router } from "express";
-import { pool } from "../utils/db.js";
+import { OrderModel } from "../models/order.js";
+import { ProductModel } from "../models/product.js";
 import { requireAdmin } from "../middleware/auth.js";
 export const analyticsRouter = Router();
 // Sales and revenue for charting (past 30 days)
 analyticsRouter.get("/sales", requireAdmin, async (req, res) => {
-    const result = await pool.query(`
-    SELECT
-      DATE_TRUNC('day', created_at) AS day,
-      SUM(total) as revenue,
-      COUNT(*) as orders
-    FROM orders
-    WHERE created_at > NOW() - INTERVAL '30 days'
-    GROUP BY day
-    ORDER BY day ASC
-    `);
-    res.json(result.rows);
+    try {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const sales = await OrderModel.aggregate([
+            { $match: { created_at: { $gte: thirtyDaysAgo } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
+                    revenue: { $sum: "$total_amount" },
+                    orders: { $sum: 1 }
+                }
+            },
+            { $project: { day: "$_id", revenue: 1, orders: 1, _id: 0 } },
+            { $sort: { day: 1 } }
+        ]);
+        res.json(sales);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch sales analytics" });
+    }
 });
 // Best selling products (top 5)
 analyticsRouter.get("/top-products", requireAdmin, async (req, res) => {
-    const result = await pool.query(`
-    SELECT
-      p.id, p.name, SUM((p2->>'quantity')::int) as sold
-    FROM orders o,
-         jsonb_array_elements(o.products) as p2
-         JOIN products p ON (p.id = (p2->>'productId')::int)
-    GROUP BY p.id, p.name
-    ORDER BY sold DESC
-    LIMIT 5
-    `);
-    res.json(result.rows);
+    try {
+        const top = await OrderModel.aggregate([
+            { $unwind: "$products" },
+            {
+                $group: {
+                    _id: "$products.productId",
+                    sold: { $sum: "$products.quantity" }
+                }
+            },
+            { $sort: { sold: -1 } },
+            { $limit: 5 }
+        ]);
+        const result = [];
+        for (const item of top) {
+            const prod = await ProductModel.findOne({ id: item._id }).lean();
+            if (prod) {
+                result.push({ id: prod.id, name: prod.name, sold: item.sold });
+            }
+        }
+        res.json(result);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch top products analytics" });
+    }
 });

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserModel } from "../models/User.js";
+import { UserModel } from "../models/user.js";
 import { z } from "zod";
 import { hashPassword, verifyPassword } from "../utils/fake-auth.js";
 

@@ -1,11 +1,17 @@
 import { Router } from "express";
-import { pool } from "../utils/db.js";
+import { OrderModel } from "../models/order.js";
+import { ProductModel } from "../models/product.js";
 import { requireUser } from "../middleware/auth.js";
 import { z } from "zod";
 export const orderRouter = Router();
 orderRouter.get("/", requireUser, async (req, res) => {
-    const result = await pool.query("SELECT * FROM orders WHERE user_id = $1", [req.session.userId]);
-    res.json(result.rows);
+    try {
+        const orders = await OrderModel.find({ user_id: req.session.userId }).sort({ created_at: -1 }).lean();
+        res.json(orders);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch orders" });
+    }
 });
 const orderSchema = z.object({
     products: z.array(z.object({
@@ -18,14 +24,31 @@ orderRouter.post("/", requireUser, async (req, res) => {
     if (!parse.success)
         return res.status(400).json(parse.error);
     const { products } = parse.data;
-    // Calculate total (for demo, price fetched from db)
-    let total = 0;
-    for (const item of products) {
-        const result = await pool.query("SELECT price FROM products WHERE id = $1", [item.productId]);
-        if (!result.rows[0])
-            return res.status(400).json({ error: "Invalid product" });
-        total += result.rows[0].price * item.quantity;
+    try {
+        let total = 0;
+        const orderItems = [];
+        for (const item of products) {
+            const prod = await ProductModel.findOne({ id: item.productId }).lean();
+            if (!prod) {
+                return res.status(400).json({ error: `Invalid product ID: ${item.productId}` });
+            }
+            const price = Number(prod.price);
+            total += price * item.quantity;
+            orderItems.push({ productId: item.productId, quantity: item.quantity, price });
+        }
+        const maxOrder = await OrderModel.findOne().sort({ id: -1 }).lean();
+        const nextId = (maxOrder?.id || 0) + 1;
+        const newOrder = await OrderModel.create({
+            id: nextId,
+            user_id: req.session.userId,
+            total_amount: total,
+            status: "pending",
+            products: orderItems,
+            created_at: new Date()
+        });
+        res.json(newOrder);
     }
-    const orderResult = await pool.query("INSERT INTO orders (user_id, products, total, status) VALUES ($1, $2, $3, $4) RETURNING *", [req.session.userId, JSON.stringify(products), total, "pending"]);
-    res.json(orderResult.rows[0]);
+    catch (e) {
+        res.status(500).json({ error: "Failed to create order" });
+    }
 });
