@@ -1,40 +1,61 @@
 import { Router } from "express";
-import { pool } from "../utils/db.js";
+import { UserModel } from "../models/User.js";
+import { OrderModel } from "../models/Order.js";
 import { requireAdmin } from "../middleware/auth.js";
 
 export const adminRouter = Router();
 
 // Get all users
 adminRouter.get("/users", requireAdmin, async (_, res) => {
-  const result = await pool.query(
-    "SELECT id, email, name, role, created_at FROM users ORDER BY created_at DESC"
-  );
-  res.json(result.rows);
+  try {
+    const users = await UserModel.find({}, { password_hash: 0 }).sort({ created_at: -1 }).lean();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
 });
 
 // Update user role
 adminRouter.put("/user/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
-  await pool.query("UPDATE users SET role = $1 WHERE id = $2", [role, id]);
-  res.json({ success: true });
+  try {
+    await UserModel.updateOne({ id: Number(id) }, { role });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update user role" });
+  }
 });
 
 // Delete user
 adminRouter.delete("/user/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
-  await pool.query("DELETE FROM users WHERE id = $1", [id]);
-  res.json({ success: true });
+  try {
+    await UserModel.deleteOne({ id: Number(id) });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete user" });
+  }
 });
 
+// Get all orders
 adminRouter.get("/orders", requireAdmin, async (_, res) => {
-  const result = await pool.query("SELECT * FROM orders");
-  res.json(result.rows);
+  try {
+    const orders = await OrderModel.find().sort({ created_at: -1 }).lean();
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch orders" });
+  }
 });
 
+// Update order status
 adminRouter.put("/order/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  await pool.query("UPDATE orders SET status = $1 WHERE id = $2", [status, id]);
-  res.json({ success: true });
+  try {
+    await OrderModel.updateOne({ id: Number(id) }, { status });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update order status" });
+  }
 });
