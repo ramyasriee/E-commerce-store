@@ -261,9 +261,8 @@ const App = () => {
             </div>
           </div>
           <div>
-            <h4 style={{ marginBottom: '1rem' }}>Customer Service</h4>
+            <h4 style={{ marginBottom: '1rem' }}>Support</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', opacity: 0.9 }}>
-              <p>Email: yakshith.s.y1232gmail.com</p>
               <p>Mon-Sat: 9AM - 6PM</p>
             </div>
           </div>
