@@ -4,12 +4,22 @@ import { ProductModel } from "../models/product.js";
 import { UserModel } from "../models/user.js";
 import { initialProducts } from "./mockData.js";
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ecommerce";
+export let isMongoConnected = false;
 export async function connectMongo() {
-    console.log(`Connecting to MongoDB at ${MONGODB_URI}...`);
-    const conn = await mongoose.connect(MONGODB_URI);
-    console.log("Successfully connected to MongoDB!");
-    await seedDatabaseIfNeeded();
-    return conn;
+    try {
+        console.log(`Connecting to MongoDB at ${MONGODB_URI}...`);
+        // 3 second connection timeout to prevent cloud hanging
+        await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });
+        isMongoConnected = true;
+        console.log("Successfully connected to MongoDB!");
+        await seedDatabaseIfNeeded();
+        return true;
+    }
+    catch (err) {
+        isMongoConnected = false;
+        console.warn("MongoDB connection failed or unavailable. Falling back to In-Memory mode.");
+        return false;
+    }
 }
 async function seedDatabaseIfNeeded() {
     try {
@@ -17,11 +27,9 @@ async function seedDatabaseIfNeeded() {
         if (productCount === 0) {
             console.log("Seeding 50 initial products into MongoDB...");
             await ProductModel.insertMany(initialProducts);
-            console.log("Successfully seeded 50 products!");
         }
         const userCount = await UserModel.countDocuments();
         if (userCount === 0) {
-            console.log("Seeding default admin user into MongoDB...");
             const passwordHash = await bcrypt.hash("yakshith", 10);
             await UserModel.create({
                 id: 1,
@@ -31,22 +39,9 @@ async function seedDatabaseIfNeeded() {
                 role: "admin",
                 created_at: new Date()
             });
-            console.log("Successfully seeded default admin user!");
         }
     }
     catch (err) {
         console.error("Error seeding MongoDB:", err);
     }
 }
-// Backward-compatible query wrapper if needed
-export const pool = {
-    async connect() {
-        return {
-            query: async () => ({ rows: [] }),
-            release: () => { }
-        };
-    },
-    async query() {
-        return { rows: [] };
-    }
-};
