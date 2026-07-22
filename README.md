@@ -84,16 +84,6 @@ A full-stack e-commerce application built with React, Redux, TypeScript, Node.js
    - Frontend: [http://localhost:5173](http://localhost:5173)
    - Backend API: [http://localhost:4000/api/products](http://localhost:4000/api/products)
 
----
-
-## 🔑 Default Admin Account
-
-- **Email:** `yakshith@admin.com`
-- **Password:** `yakshith`
-
-*(Log in with these credentials to access the Admin Panel, Analytics Dashboard, and Product Management)*
-
----
 
 ## 🌐 API Endpoints
 
