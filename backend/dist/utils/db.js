@@ -30,12 +30,12 @@ async function seedDatabaseIfNeeded() {
         }
         const userCount = await UserModel.countDocuments();
         if (userCount === 0) {
-            const passwordHash = await bcrypt.hash("yakshith", 10);
+            const passwordHash = await bcrypt.hash("admin123", 10);
             await UserModel.create({
                 id: 1,
-                email: "yakshith@admin.com",
+                email: "admin@shophub.local",
                 password_hash: passwordHash,
-                name: "Yakshith Admin",
+                name: "Platform Admin",
                 role: "admin",
                 created_at: new Date()
             });

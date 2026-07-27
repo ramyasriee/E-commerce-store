@@ -59,4 +59,4 @@ Open DEPLOY_NOW.md for detailed instructions!
 
 ================================================================
 
-Made with ❤️ by Yakshith
+Built for ShopHub

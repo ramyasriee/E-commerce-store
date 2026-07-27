@@ -19,7 +19,7 @@ A full-stack e-commerce application built with React, Redux, TypeScript, Node.js
 
 ## 🚀 Live Demo & Repository
 
-- 🐙 **GitHub Repository:** [https://github.com/mohanat268/ecom.git](https://github.com/mohanat268/ecom.git)
+- 🐙 **GitHub Repository:** [https://github.com/your-username/ecom.git](https://github.com/your-username/ecom.git)
 - 🌐 **Frontend App (Vercel):** [https://frontend-peach-mu-52.vercel.app](https://frontend-peach-mu-52.vercel.app)
 - ⚙️ **Backend API (Vercel):** [https://backend-peach-two-65.vercel.app/api/products](https://backend-peach-two-65.vercel.app/api/products)
 
@@ -54,7 +54,7 @@ A full-stack e-commerce application built with React, Redux, TypeScript, Node.js
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/mohanat268/ecom.git
+   git clone https://github.com/your-username/ecom.git
    cd ecom
    ```
 

@@ -14,8 +14,8 @@ Repository name:** `ecom-project-`
 
 6. **Push your code:**
 ```bash
-cd /Users/yakshith/Desktop/new\ pro
-git remote add origin https://github.com/yakshith123/ecom-project-.git
+cd /path/to/ecom
+git remote add origin https://github.com/your-username/ecom-project-.git
 git branch -M main
 git push -u origin main
 ```
@@ -39,9 +39,9 @@ Name: `ecom-db`
    ```
 5. **Import Database Schema:**
    - Click "SQL Editor" in sidebar
-   - Copy contents from: `/Users/yakshith/Desktop/new pro/backend/schema.sql`
+   - Copy contents from: `/path/to/ecom/backend/schema.sql`
    - Paste and click "Run"
-   - Then copy and paste from: `/Users/yakshith/Desktop/new pro/backend/add_products.sql`
+   - Then copy and paste from: `/path/to/ecom/backend/add_products.sql`
    - Click "Run" again
 
 ✅ **Database Ready!**
@@ -188,8 +188,8 @@ Users can install it like an app:
 
 To test admin features:
 
-**Email:** yakshith@admin.com  
-**Password:** yakshith
+**Email:** admin@shophub.local  
+**Password:** admin123
 
 ---
 
@@ -262,7 +262,7 @@ After deployment, you can:
 
 ## 📧 Need Help?
 
-**Email:** yakshith.s.y1232gmail.com
+**Email:** support@shophub.local
 
 **Stuck?** Check:
 - Render logs for backend errors
@@ -284,4 +284,4 @@ Your e-commerce store is now **LIVE** and accessible worldwide! 🌍
 
 ---
 
-Made with ❤️ by Yakshith
+Built for ShopHub

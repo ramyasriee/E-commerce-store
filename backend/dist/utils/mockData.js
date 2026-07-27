@@ -59,9 +59,9 @@ export const initialProducts = [
 export const getInitialUsers = () => [
     {
         id: 1,
-        email: 'yakshith@admin.com',
-        password_hash: bcrypt.hashSync('yakshith', 10),
-        name: 'Yakshith Admin',
+        email: 'admin@shophub.local',
+        password_hash: bcrypt.hashSync('admin123', 10),
+        name: 'Platform Admin',
         role: 'admin',
         created_at: new Date()
     }
