@@ -282,7 +282,7 @@ const App = () => {
           textAlign: 'center',
           opacity: 0.8
         }}>
-          <p>© 2025 ShopHub. All rights reserved. Made with ❤️ in India</p>
+          <p>© 2026 ShopHub. All rights reserved. Made with ❤️ in India</p>
         </div>
       </footer>
     </div>

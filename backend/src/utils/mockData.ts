@@ -97,11 +97,11 @@ export const initialProducts: Product[] = [
   { id: 50, name: 'Samsung Galaxy Buds2 Pro', description: 'Hi-Fi sound, intelligent ANC', price: 16999.00, image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400', images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400'], stock: 30 }
 ];
 
-export const getInitialUsers = async (): Promise<User[]> => [
+export const getInitialUsers = (): User[] => [
   {
     id: 1,
     email: 'yakshith@admin.com',
-    password_hash: await bcrypt.hash('yakshith', 10),
+    password_hash: bcrypt.hashSync('yakshith', 10),
     name: 'Yakshith Admin',
     role: 'admin',
     created_at: new Date()
@@ -119,7 +119,7 @@ export class InMemoryDb {
   nextOrderItemId = 1;
 
   constructor() {
-    getInitialUsers().then(u => { this.users = u; });
+    this.users = getInitialUsers();
   }
 
   async query(text: string, params: any[] = []): Promise<{ rows: any[] }> {
@@ -182,6 +182,12 @@ export class InMemoryDb {
     if (q.includes('FROM users WHERE email =')) {
       const email = String(params[0]);
       const u = this.users.find(user => user.email.toLowerCase() === email.toLowerCase());
+      return { rows: u ? [u] : [] };
+    }
+
+    if (q.includes('FROM users WHERE id =')) {
+      const id = Number(params[0]);
+      const u = this.users.find(user => user.id === id);
       return { rows: u ? [u] : [] };
     }
 
