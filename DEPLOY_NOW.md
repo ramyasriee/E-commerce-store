@@ -46,6 +46,7 @@ Name: `ecom-db`
 
 ✅ **Database Ready!**
 
+
 ---
 
 ## Step 3: Deploy Backend (3 minutes)

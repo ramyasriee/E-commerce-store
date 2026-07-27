@@ -2,25 +2,19 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { ProductModel } from "../models/product.js";
 import { UserModel } from "../models/user.js";
-import { initialProducts, inMemoryDb } from "./mockData.js";
+import { initialProducts } from "./mockData.js";
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ecommerce";
 
-export let isMongoConnected = false;
-
-export async function connectMongo(): Promise<boolean> {
+export async function connectMongo(): Promise<void> {
   try {
     console.log(`Connecting to MongoDB at ${MONGODB_URI}...`);
-    // 3 second connection timeout to prevent cloud hanging
-    await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });
-    isMongoConnected = true;
+    await mongoose.connect(MONGODB_URI);
     console.log("Successfully connected to MongoDB!");
     await seedDatabaseIfNeeded();
-    return true;
   } catch (err) {
-    isMongoConnected = false;
-    console.warn("MongoDB connection failed or unavailable. Falling back to In-Memory mode.");
-    return false;
+    console.error("MongoDB connection failed:", err);
+    process.exit(1);
   }
 }
 
