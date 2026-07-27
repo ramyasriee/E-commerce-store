@@ -24,25 +24,19 @@ git push -u origin main
 
 ## Step 2: Deploy Database (3 minutes)
 
-### Using Neon.tech (FREE)
+### Using MongoDB Atlas (FREE)
 
-1. **Go to:** https://console.neon.tech/signup
-2. **Sign up** with GitHub (1-click)
-3. **Create Project:**
-Name: `ecom-db`
-   - Click "Create Project"
-4. **Get Connection String:**
-   - Click "Connection Details"
+1. **Go to:** https://www.mongodb.com/cloud/atlas/register
+2. **Sign up** and create a free cluster.
+3. **Database Access:** Create a database user with a password.
+4. **Network Access:** Allow access from anywhere (`0.0.0.0/0`) so Vercel can connect.
+5. **Get Connection String:**
+   - Click "Connect" -> "Connect your application"
    - Copy the connection string:
    ```
-   postgresql://username:password@ep-xxxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+   mongodb+srv://<username>:<password>@cluster0.mongodb.net/ecommerce?retryWrites=true&w=majority
    ```
-5. **Import Database Schema:**
-   - Click "SQL Editor" in sidebar
-   - Copy contents from: `/path/to/ecom/backend/schema.sql`
-   - Paste and click "Run"
-   - Then copy and paste from: `/path/to/ecom/backend/add_products.sql`
-   - Click "Run" again
+   - *Remember to replace `<password>` with your actual database user password!*
 
 ✅ **Database Ready!**
 
@@ -69,7 +63,7 @@ Name: `ecom-db`
    Click "Advanced" → Add Environment Variables:
    
    ```
-   DATABASE_URL = [Paste your Neon connection string from Step 2]
+   MONGODB_URI = [Paste your MongoDB connection string from Step 2]
    SESSION_SECRET = shophub-secret-key-2024
    PORT = 4000
    NODE_ENV = production
@@ -203,9 +197,8 @@ To test admin features:
 - 🔄 First request after sleep takes 30-60 seconds to wake up
 - ✅ Perfect for demos and testing!
 
-**Neon (Database):**
-- 💾 3GB storage (more than enough!)
-- 🔄 Automatically suspends after inactivity
+**MongoDB Atlas (Database):**
+- 💾 512MB storage on free tier (more than enough!)
 - ✅ Always available when needed
 
 **Vercel (Frontend):**
@@ -215,7 +208,7 @@ To test admin features:
 
 ### To Upgrade (Later):
 - Render: $7/month for always-on
-- Neon: Free tier is usually enough
+- MongoDB: Free tier is usually enough
 - Vercel: Free tier is great!
 
 ---
@@ -228,9 +221,9 @@ To test admin features:
 3. Wait 1 minute for backend to wake up
 
 ### "Database error"
-1. Check DATABASE_URL in Render
-2. Make sure schema is imported in Neon
-3. Verify connection string has `?sslmode=require`
+1. Check MONGODB_URI in Render/Vercel
+2. Verify Network Access in MongoDB Atlas allows `0.0.0.0/0`
+3. Verify connection string password is correct
 
 ### Build failed
 1. Check build logs in Render/Vercel
