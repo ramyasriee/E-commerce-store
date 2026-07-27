@@ -38,11 +38,12 @@ authRouter.post("/register", async (req: Request, res: Response) => {
       created_at: new Date()
     });
 
-    req.session.userId = newUser.id;
+    req.session.userId = nextId;
     req.session.isAdmin = newUser.role === "admin";
-    return res.json({ id: newUser.id, email: newUser.email, name: newUser.name, isAdmin: newUser.role === "admin" });
-  } catch (e) {
-    res.status(500).json({ error: "Registration failed" });
+    return res.json({ id: nextId, email: newUser.email, name: newUser.name, isAdmin: newUser.role === "admin" });
+  } catch (e: any) {
+    console.error("Registration error:", e);
+    res.status(500).json({ error: "Registration failed: " + (e.message || String(e)) });
   }
 });
 
@@ -70,7 +71,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 
   try {
     const normalizedEmail = email.toLowerCase();
-    const user = await UserModel.findOne({ email: normalizedEmail });
+    const user = await UserModel.findOne({ email: normalizedEmail }).lean();
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
     const valid = await verifyPassword(password, user.password_hash);
@@ -79,8 +80,9 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     req.session.userId = user.id;
     req.session.isAdmin = user.role === "admin";
     res.json({ id: user.id, email: user.email, name: user.name, isAdmin: user.role === "admin" });
-  } catch (e) {
-    res.status(500).json({ error: "Login failed" });
+  } catch (e: any) {
+    console.error("Login error:", e);
+    res.status(500).json({ error: "Login failed: " + (e.message || String(e)) });
   }
 });
 
